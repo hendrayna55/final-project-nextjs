@@ -1,19 +1,20 @@
-import { FaSearch, FaHome, FaPlus, FaHeart, FaUser, FaSignOutAlt } from "react-icons/fa";
-import { FaGear } from "react-icons/fa6";
 import { useMutation } from '@/hooks/useMutation';
+import { Button, Spinner, useToast } from '@chakra-ui/react';
+import Cookies from 'js-cookie';
+import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
-import { Button, Spinner, useToast } from "@chakra-ui/react";
-import Cookies from "js-cookie";
-import Link from "next/link";
-import Image from "next/image";
+import React, { useState } from 'react';
+import { usePost } from '@/contexts/PostContext';
+import { FaBell, FaHeart, FaHome, FaPlus, FaSearch, FaSignOutAlt, FaUser } from 'react-icons/fa';
 
-const Sidebar = () => {
+const SideBar = () => {
+    const { openModal } = usePost();
+    const router = useRouter();
     const [isLogout, setIsLogout] = useState(false);
     const toast = useToast();
     const { mutate } = useMutation();
-    const router = useRouter();
-
+    
     const HandleLogout = async () => {
         setIsLogout(true);
 
@@ -21,7 +22,7 @@ const Sidebar = () => {
             {
                 url: 'https://service.pace-unv.cloud/api/logout',
                 headers: {
-                    Authorization : `Bearer ${Cookies.get("user_token")}`,
+                    Authorization: `Bearer ${Cookies.get("user_token")}`,
                 },
             },
         );
@@ -49,15 +50,12 @@ const Sidebar = () => {
 
             Cookies.remove("user_token");
 
-            setTimeout(() => {
-                router.push('/login');
-            }, 3000);
+            router.push('/login');
         }
     };
 
     return (
         <>
-            {/* Sidebar di desktop */}
             <div className="md:flex hidden w-16 md:w-20 bg-gray-800 bg-opacity-80 fixed left-0 top-0 h-screen flex-col justify-between py-6 items-center shadow-md">
                 {/* Bagian atas */}
                 <Link href={"/"} className="hover:scale-110 duration-150 transition delay-0">
@@ -70,16 +68,13 @@ const Sidebar = () => {
                         <Link href={"/"}>
                             <FaHome className="w-8 h-8 text-white"/>
                         </Link>
-                        <Link href={"/"}>
-                            <FaSearch className="w-8 h-8 text-white"/>
+                        <Link href={"/notifications"}>
+                            <FaBell className="w-8 h-8 text-white"/>
                         </Link>
                         {/* Tombol Add Post */}
-                        <button type="button">
+                        <button type="button" onClick={() => openModal()}>
                             <FaPlus className="w-8 h-8 text-white" />
                         </button>
-                        <Link href={"/"}>
-                            <FaHeart className="w-8 h-8 text-white"/>
-                        </Link>
                         <Link href={"/profile"}>
                             <FaUser className="w-8 h-8 text-white"/>
                         </Link>
@@ -89,10 +84,6 @@ const Sidebar = () => {
                 {/* Bagian bawah */}
                 <div className="space-y-8">
                     <div className="flex flex-col justify-center items-center gap-5">
-                        <Link href={"/"}>
-                            <FaGear className="w-8 h-8 text-white"/>
-                        </Link>
-
                         {
                             isLogout ? (
                                 <Spinner
@@ -118,7 +109,7 @@ const Sidebar = () => {
                 <Link href={"/"}>
                     <FaSearch className="w-6 h-6 text-black"/>
                 </Link>
-                <button type="button">
+                <button type="button" onClick={() => openModal()}>
                     <FaPlus className="w-8 h-8 text-black" />
                 </button>
                 <Link href={"/"}>
@@ -129,7 +120,7 @@ const Sidebar = () => {
                 </Link>
             </div>
         </>
-    );
-};
+    )
+}
 
-export default Sidebar;
+export default SideBar

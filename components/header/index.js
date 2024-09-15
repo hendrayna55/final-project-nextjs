@@ -1,30 +1,21 @@
-import { ChevronDownIcon } from '@chakra-ui/icons';
-import { Button, Menu, MenuButton, MenuItem, MenuList, Spinner } from '@chakra-ui/react';
 import { useQueries } from '@/hooks/useQueries';
+import { Button, Menu, MenuButton, Spinner } from '@chakra-ui/react';
 import Image from 'next/image';
 import Link from 'next/link';
+import React from 'react';
 
-function Header({ onSelectPostType }) {
+const Header = () => {
     const dataUser = useQueries({
         prefixUrl: 'https://service.pace-unv.cloud/api/user/me',
     });
-
-    const HandleJenisPost = (jenis) => {
-        const url = `https://service.pace-unv.cloud/api/posts?type=${jenis}`;
-        onSelectPostType(url); // Mengirim URL yang dipilih ke Home
-    };
 
     return (
         <>
             <div className="hidden md:flex items-center justify-center pb-4 border-b sticky top-0 p-4 border-none z-50">
                 <Menu>
-                    <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
-                        {dataUser?.isLoading ? <Spinner /> : dataUser?.data?.data.name}
+                    <MenuButton as={Button} onClick={() => router.push('/profile')} color={'black'}>
+                        Welcome, {dataUser?.isLoading ? <Spinner /> : dataUser?.data?.data.name}!
                     </MenuButton>
-                    <MenuList>
-                        <MenuItem onClick={() => HandleJenisPost("all")}>All Post</MenuItem>
-                        <MenuItem onClick={() => HandleJenisPost("me")}>Your Post</MenuItem>
-                    </MenuList>
                 </Menu>
             </div>
 
@@ -36,7 +27,7 @@ function Header({ onSelectPostType }) {
                 </div>
             </div>
         </>
-    );
+    )
 }
 
 export default Header;

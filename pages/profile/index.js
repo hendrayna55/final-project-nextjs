@@ -389,7 +389,7 @@ export default function Profile() {
                     <link rel='icon' href='/japan-gapura.png' />
                 </Head>
 
-                <div className="flex flex-col min-h-screen bg-japan">
+                <div className="flex flex-col min-h-screen">
                     {/* Header */}
                     <div className="hidden md:flex items-center justify-center pb-4 border-b sticky top-0 p-4 border-none z-50">
                         <Menu>

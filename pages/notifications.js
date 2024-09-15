@@ -3,7 +3,7 @@ import { useQueries } from '@/hooks/useQueries';
 import { GridItem as ChakraGridItem, Card, Heading, CardBody, Stack, Box, Text, StackDivider, Spinner, useToast, Textarea, Button, Grid, Menu, MenuButton, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay,  } from "@chakra-ui/react";
 import { useMutation } from '@/hooks/useMutation';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaHeart, FaSearch, FaHome, FaPlus, FaUser, FaSignOutAlt, FaBell } from 'react-icons/fa';
 import Cookies from "js-cookie";
 import Head from "next/head";
@@ -63,7 +63,30 @@ export default function NotificationsPage() {
 
     const [isValid, setIsValid] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedPostId, setSelectedPostId] = useState(null);
     const [isEditMode, setIsEditMode] = useState(false);
+
+    // Fetch selected post for editing
+    useEffect(() => {
+        if (isEditMode && selectedPostId) {
+            async function fetchingData() {
+                const res = await fetch(
+                    `https://service.pace-unv.cloud/api/post/${selectedPostId}`,
+                    {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${Cookies.get("user_token")}`
+                        },
+                    }
+                );
+                const dataPostId = await res.json();
+                
+                setPost({description: dataPostId?.data?.description} || {});
+            }
+            fetchingData();
+        }
+    }, [selectedPostId, isEditMode]);
 
     const openModal = () => {
         setPost({ description: '' }); // Reset form for adding
